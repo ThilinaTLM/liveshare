@@ -1,0 +1,25 @@
+{
+  "name": "real.share",
+  "version": "0.1.0",
+  "main": "./dist/Server.js",
+  "author": "TLM",
+  "license": "MIT",
+  "dependencies": {
+    "prompt-sync": "^4.2.0",
+    "socket.io": "^2.3.0",
+    "socket.io-client": "^2.3.0"
+  },
+  "devDependencies": {
+    "@types/prompt-sync": "^4.1.0",
+    "@types/socket.io": "^2.1.8",
+    "@types/socket.io-client": "^1.4.33",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.5"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node .",
+    "devServer": "ts-node ./src/server/Server.ts",
+    "devClient": "ts-node ./src/client/Client.ts"
+  }
+}
