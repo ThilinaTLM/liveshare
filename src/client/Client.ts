@@ -18,7 +18,7 @@ class Client implements FileObserver {
     private _dirManager: DirManager;
 
     public constructor() {
-        this._serverUrl = "ws://" + this.inputAskUrl("localhost:8080");
+        this._serverUrl = "ws://" + this.inputAskUrl("realshare.herokuapp.com");
         this._username = this.inputAskUsername("client");
         this._sock = io(this._serverUrl, {
             autoConnect: false,

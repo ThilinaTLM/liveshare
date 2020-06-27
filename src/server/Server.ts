@@ -13,7 +13,7 @@ class Server implements IClientManager {
 
     constructor() {
         this._clients = new Map<string, SClient>();
-        this._port = 8080;
+        this._port = Number(process.env.PORT) || 8080;
         this._server = http.createServer(this.httpReqHandler);
         this._socketServer = io.listen(this._server);
     }
