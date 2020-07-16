@@ -21,6 +21,7 @@ socketServer.on("connect", onConnect);
 function onConnect(socket: Socket) {
     let username = socket.request._query.username;
     let password = socket.request._query.password;
+    let destination = socket.request._query.destination;
 
     // check for username and password
     if (!username || !password) {
@@ -41,13 +42,19 @@ function onConnect(socket: Socket) {
     hub.setSocket(username, password, socket);
 
     // client specific binding.
-    socket.on("disconnect", () => onDisconnect(username));
+    socket.on("disconnect", () => onDisconnect(username, destination));
     socket.on("message", onMessage);
     socket.on("command", onCommand);
     socket.on('file', onFile);
 
     // Notify about connection
     sendNote(socket, "DONE", `You are successfully connected as '${username}'.`);
+    if (destination) {
+        let to = hub.selectSocket(destination)
+        if (to && to.connected) {
+            sendNote(to, "DONE", `${username}(destination) is available now!`)
+        }
+    }
     console.log("[ACCEPT]:", username, socket.id);
 }
 
@@ -78,8 +85,14 @@ function onCommand({ from, command, args }: Command) {
     }
 }
 
-function onDisconnect(username: string) {
+function onDisconnect(username: string, destination: string) {
     console.log("[DISCONNECTED]", username);
+    if (destination) {
+        let to = hub.selectSocket(destination)
+        if (to && to.connected) {
+            sendNote(to, "DONE", `${username} is disconnected!`)
+        }
+    }
 }
 
 //--------------------------------------------------------------------------------------------------

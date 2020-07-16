@@ -54,7 +54,7 @@ function onConnect() {
 }
 
 function onDisconnect() {
-    console.log("[LOCAL]: Disconnected from the server!");
+    console.log("[LOCAL]: Disconnected from the server!")
 }
 
 function onNote({ code, msg }: MsgNote) {
@@ -90,9 +90,17 @@ const sendFile = (socket: Socket, file: FileContent) => {
 
 // commandline input listener
 const listener = () => {
+    reconnectSocket();
     input.question("", (answer) => {
         sendMessage(socket, answer);
         setTimeout(listener, 0);
     })
 }
 listener();
+
+function reconnectSocket(): void {
+    if (socket.disconnected) {
+        socket.connect();
+        console.log("[LOCAL]: Reconnecting...")
+    }
+}

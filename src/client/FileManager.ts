@@ -44,12 +44,13 @@ export const StartFileWatcher = async (dirPath: string, types: string[], cb: (fi
 }
 
 const onChange = (absPath: string) => {
+    absPath = absPath.replace("\\", "/")
     let relPath = getRelativePath(rootDir, absPath);
     let fileName = getFileName(absPath);
 
     if (ignoreList.includes(absPath)) return;
     if (matchExtension(fileName)) {
-        generateFileContent(absPath, relPath, fileName)
+        setTimeout(generateFileContent, 100, [absPath, relPath, fileName])
     }
     console.log("[WATCHER]: Modified", relPath);
 }
@@ -75,15 +76,9 @@ function getRelativePath(root: string, path: string): string {
 }
 
 function getFileName(path: string): string {
-    let splitChar: string;
-    if (path.includes("/")) {
-        splitChar = "/"
-    } else if (path.includes("\\")) {
-        splitChar = "\\"
-    } else {
-        return path
+    if (!path.includes("/")) {
+        return path;
     }
-
-    let splitParts = path.split(splitChar)
+    let splitParts = path.split(path)
     return splitParts[splitParts.length - 1]
 }
