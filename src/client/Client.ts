@@ -89,14 +89,14 @@ const sendFile = (socket: Socket, file: FileContent) => {
 };
 
 // commandline input listener
-const listener = () => {
-    reconnectSocket();
+const listener = (firstTime: boolean = false) => {
+    if (!firstTime) reconnectSocket();
     input.question("", (answer) => {
         sendMessage(socket, answer);
         setTimeout(listener, 0);
     })
 }
-listener();
+listener(true);
 
 function reconnectSocket(): void {
     if (socket.disconnected) {
