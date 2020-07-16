@@ -1,4 +1,4 @@
-import nsfw, {ActionType, NSFW} from 'nsfw'
+import chokidar from 'chokidar';
 import * as Path from 'path'
 import * as fs from "fs";
 import { FileContent } from "../FileContent";
@@ -30,11 +30,12 @@ export const StartFileWatcher = async (dirPath: string, types: string[], cb: (fi
         return false;
     }
     try {
-        const watcher = await nsfw(dirPath, onEvent);
-        await watcher.start();
+        const watcher = chokidar.watch(dirPath)
+        watcher.on('change', onChange);
         callback = cb;
         extList = types;
         rootDir = dirPath;
+        console.log(`[WATCHER]: Watch file changes in ${dirPath}`)
         return true
     } catch (e) {
         console.log("[WATCHER]: Error when loading watcher")
@@ -42,25 +43,18 @@ export const StartFileWatcher = async (dirPath: string, types: string[], cb: (fi
     }
 }
 
-const onEvent = (events: any[]) => {
-    let lastEvent = events[events.length - 1]
-    let {action} = lastEvent;
-    switch (action) {
-        case nsfw.actions.MODIFIED:
-            let path = Path.join(lastEvent.directory, lastEvent.file)
-            if (ignoreList.includes(path)) return;
-            if (matchExtension(lastEvent.file)) {
-                onModified(path, lastEvent.file);
-            }
-            console.log("[WATCHER]: Modified", lastEvent.file);
-            break;
-        default:
-            break;
+const onChange = (absPath: string) => {
+    let relPath = getRelativePath(rootDir, absPath);
+    let fileName = getFileName(absPath);
+
+    if (ignoreList.includes(absPath)) return;
+    if (matchExtension(fileName)) {
+        generateFileContent(absPath, relPath, fileName)
     }
+    console.log("[WATCHER]: Modified", relPath);
 }
 
-const onModified = (path: string, fileName: string) => {
-    let relPath = relativePath(rootDir, path);
+const generateFileContent = (path: string, relPath: string, fileName: string) => {
     fs.readFile(path, (err, data) => {
         if (err) {
             console.log("[WATCHER]: Error when reading file,", relPath)
@@ -76,6 +70,20 @@ const matchExtension = (filename: string): boolean => {
     return extList.includes(ext.toLowerCase());
 }
 
-function relativePath(root: string, path: string): string {
+function getRelativePath(root: string, path: string): string {
     return path.split(root, 2)[1];
+}
+
+function getFileName(path: string): string {
+    let splitChar: string;
+    if (path.includes("/")) {
+        splitChar = "/"
+    } else if (path.includes("\\")) {
+        splitChar = "\\"
+    } else {
+        return path
+    }
+
+    let splitParts = path.split(splitChar)
+    return splitParts[splitParts.length - 1]
 }
