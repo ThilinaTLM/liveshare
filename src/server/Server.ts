@@ -1,6 +1,7 @@
 import io, { Socket } from "socket.io";
 import * as http from "http";
 import express from "express";
+import Path from 'path'
 
 import { FileContent } from "../FileContent";
 import { SocketHub } from "./SocketHub";
@@ -45,14 +46,14 @@ function onConnect(socket: Socket) {
     socket.on("disconnect", () => onDisconnect(username, destination));
     socket.on("message", onMessage);
     socket.on("command", onCommand);
-    socket.on('file', onFile);
+    socket.on("file", onFile);
 
     // Notify about connection
     sendNote(socket, "DONE", `You are successfully connected as '${username}'.`);
     if (destination) {
-        let to = hub.selectSocket(destination)
+        let to = hub.selectSocket(destination);
         if (to && to.connected) {
-            sendNote(to, "DONE", `${username}(destination) is available now!`)
+            sendNote(to, "DONE", `${username}(destination) is available now!`);
         }
     }
     console.log("[ACCEPT]:", username, socket.id);
@@ -62,23 +63,23 @@ function onConnect(socket: Socket) {
 
 // Controlling Methods
 function onCommand({ from, command, args }: Command) {
-    let res: string, client: Socket | undefined
+    let res: string, client: Socket | undefined;
     switch (command) {
         case "LST":
-            res =  hub.availableClients().join('\n')
-            client = hub.selectSocket(from)
+            res = hub.availableClients().join("\n");
+            client = hub.selectSocket(from);
             if (client && client.connected)
                 sendNote(client, "DONE", res);
             break;
         case "CNT":
-            res =  hub.availableClients().length.toString()
-            client = hub.selectSocket(from)
+            res = hub.availableClients().length.toString();
+            client = hub.selectSocket(from);
             if (client && client.connected)
                 sendNote(client, "DONE", res);
             break;
         default:
-            console.log("[Un-support]", from)
-            client = hub.selectSocket(from)
+            console.log("[Un-support]", from);
+            client = hub.selectSocket(from);
             if (client && client.connected)
                 sendNote(client, "ERROR", "Un-support command");
             break;
@@ -88,9 +89,9 @@ function onCommand({ from, command, args }: Command) {
 function onDisconnect(username: string, destination: string) {
     console.log("[DISCONNECTED]", username);
     if (destination) {
-        let to = hub.selectSocket(destination)
+        let to = hub.selectSocket(destination);
         if (to && to.connected) {
-            sendNote(to, "DONE", `${username} is disconnected!`)
+            sendNote(to, "DONE", `${username} is disconnected!`);
         }
     }
 }
@@ -161,9 +162,12 @@ function sendFile(socket: Socket, from: string, file: FileContent) {
 //--------------------------------------------------------------------------------------------------
 
 // HTTP Client Handling
-expressServer.use((req, res) => {
-    res.send("Server is running..!");
+expressServer.use('/download', express.static('release'))
+
+expressServer.get('/', (req, res) => {
+    res.send(`Server is running..! <br> download client application <a href="/download/real-share-v0.2.5.zip">here</a>`);
 });
+
 
 // Start Server
 httpServer.listen(PORT, () => console.log("Server is running..."));

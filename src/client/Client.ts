@@ -41,7 +41,7 @@ socket.on("msg", onMessage);
 socket.on("file", onFile);
 
 // Initiate socket connection
-console.log("[LOCAL]: Connecting...")
+console.log("[LOCAL]: Connecting...");
 socket.connect();
 
 // File Watcher
@@ -55,12 +55,12 @@ function onConnect() {
 }
 
 function onDisconnect() {
-    console.log("[LOCAL]: Disconnected from the SERVER!")
+    console.log("[LOCAL]: Disconnected from the SERVER!");
 }
 
 function onNote({ code, msg }: MsgNote) {
     if (code == "TICK") {
-        console.log(msg)
+        console.log(msg);
         return;
     }
     console.log(`[SERVER][${code}]: ${msg}`);
@@ -75,7 +75,7 @@ function onFile({ from, file }: FileReceive) {
     if (from == DESTINATION) {
         FileWriteContent(file);
     } else {
-        console.log(`[FILE][WARN]: A file is received from unknown destination, ${from}`)
+        console.log(`[FILE][WARN]: A file is received from unknown destination, ${from}`);
     }
 }
 
@@ -92,8 +92,9 @@ const sendFile = (socket: Socket, file: FileContent) => {
 // commandline input listener
 const listener = () => {
     input.question("", (answer) => {
-        sendMessage(socket, answer);
+        if (answer.length > 0)
+            sendMessage(socket, answer);
         setTimeout(listener, 0);
-    })
-}
+    });
+};
 listener();
