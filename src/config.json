@@ -1,0 +1,14 @@
+{
+  "user": {
+    "username": "Client",
+    "password": "123"
+  },
+  "destination": "TLM2",
+  "server": "ws://localhost:8080",
+  "watcher": {
+    "dir": "/home/tlm/Desktop/Test",
+    "types": [
+      "txt"
+    ]
+  }
+}
