@@ -41,6 +41,7 @@ socket.on("msg", onMessage);
 socket.on("file", onFile);
 
 // Initiate socket connection
+console.log("[LOCAL]: Connecting...")
 socket.connect();
 
 // File Watcher
@@ -50,11 +51,11 @@ StartFileWatcher(DIRECTORY_PATH, FILE_TYPES, (file: FileContent) => {
 
 // Event Handling Methods
 function onConnect() {
-    console.log("[LOCAL]: Trying to authenticate...");
+    console.log("[LOCAL]: Authenticating...");
 }
 
 function onDisconnect() {
-    console.log("[LOCAL]: Disconnected from the server!")
+    console.log("[LOCAL]: Disconnected from the SERVER!")
 }
 
 function onNote({ code, msg }: MsgNote) {
@@ -89,18 +90,10 @@ const sendFile = (socket: Socket, file: FileContent) => {
 };
 
 // commandline input listener
-const listener = (firstTime: boolean = false) => {
-    if (!firstTime) reconnectSocket();
+const listener = () => {
     input.question("", (answer) => {
         sendMessage(socket, answer);
         setTimeout(listener, 0);
     })
 }
-listener(true);
-
-function reconnectSocket(): void {
-    if (socket.disconnected) {
-        socket.connect();
-        console.log("[LOCAL]: Reconnecting...")
-    }
-}
+listener();
