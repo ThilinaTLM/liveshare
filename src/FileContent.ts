@@ -1,11 +1,11 @@
 export class FileContent {
     public name: string;
-    public path: string;
+    public relativePath: string;
     public content: Buffer;
 
-    constructor(name: string, path:string, content: Buffer) {
+    constructor(name: string, relativePath:string, content: Buffer) {
         this.name = name;
-        this.path = path;
+        this.relativePath = relativePath;
         this.content = content
     }
 
