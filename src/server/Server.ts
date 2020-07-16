@@ -165,7 +165,7 @@ function sendFile(socket: Socket, from: string, file: FileContent) {
 expressServer.use('/download', express.static('release'))
 
 expressServer.get('/', (req, res) => {
-    res.send(`Server is running..! <br> download client application <a href="/download/real-share-v0.2.5.zip">here</a>`);
+    res.send(`Server is running..! <br> download client application (real-share-v0.2.6) <a href="/download/real-share-v0.2.6.zip">here</a>`);
 });
 
 

@@ -25,6 +25,7 @@ export const FileWriteContent = (file: FileContent) => {
 };
 
 export const StartFileWatcher = async (dirPath: string, types: string[], cb: (file: FileContent) => void) => {
+    dirPath = dirPath.split("\\").join('/');
     if (!fs.existsSync(dirPath)) {
         console.log("[WATCHER]: Provided path to the directory doesn't exists.");
         return false;
@@ -44,7 +45,7 @@ export const StartFileWatcher = async (dirPath: string, types: string[], cb: (fi
 };
 
 const onChange = (absPath: string) => {
-    absPath = absPath.replace("\\", "");
+    absPath = absPath.split("\\").join('/');
     let relPath = getRelativePath(rootDir, absPath);
     let fileName = getFileName(absPath);
 
