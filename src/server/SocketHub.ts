@@ -1,12 +1,10 @@
-import io, { Socket } from "socket.io";
-import { Socket as ClientSocket } from "socket.io-client";
+import { Socket } from "socket.io";
 
 interface SocketWrapper {
     readonly username: string;
     readonly password: string;
     readonly socket: Socket;
 }
-
 
 export class SocketHub {
     private _sockets: Map<string, SocketWrapper>;
@@ -16,17 +14,17 @@ export class SocketHub {
     }
 
     availableClients(): string[] {
-        let online: string[] = []
+        let online: string[] = [];
         this._sockets.forEach((sw, username) => {
-            if (sw.socket.connected) online.push(username)
-        })
+            if (sw.socket.connected) online.push(username);
+        });
         return online;
     }
 
     selectSocket(username: string): Socket | undefined {
         let sw = this._sockets.get(username);
         if (sw) {
-            return sw.socket
+            return sw.socket;
         }
         return;
     }
@@ -34,13 +32,13 @@ export class SocketHub {
     verify(username: string, password: string): boolean {
         let sw = this._sockets.get(username);
         if (sw && sw.password != password) {
-            return false
+            return false;
         }
         return true;
     }
 
     setSocket(username: string, password: string, socket: Socket) {
-        this._sockets.set(username, {username, password, socket});
+        this._sockets.set(username, { username, password, socket });
     }
 
     removeSocket(username: string) {

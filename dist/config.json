@@ -10,5 +10,8 @@
         "types": [
             "txt"
         ]
+    },
+    "writer": {
+        "accept": false
     }
 }

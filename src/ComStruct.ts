@@ -18,6 +18,7 @@ export interface MsgToServer {
     to: string,
     content: string
 }
+
 export interface MsgToClient {
     from: string,
     content: string
@@ -28,6 +29,7 @@ export interface FileSend {
     to: string,
     file: FileContent
 }
+
 export interface FileReceive {
     from: string,
     file: FileContent

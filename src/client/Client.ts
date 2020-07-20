@@ -2,7 +2,7 @@ import io from "socket.io-client";
 import readline from "readline";
 import config from "../config.json";
 import { FileReceive, MsgNote, MsgToClient } from "../ComStruct";
-import { FileWriteContent, StartFileWatcher } from "./FileManager";
+import { FileWriteContent, Initilize_FileManager, StartFileWatcher } from "./FileManager";
 import { FileContent } from "../FileContent";
 
 const input = readline.createInterface({
@@ -22,6 +22,10 @@ const DESTINATION = config.destination || "client2";
 
 const DIRECTORY_PATH = config.watcher.dir || "";
 const FILE_TYPES = config.watcher.types || [];
+const ACCEPT_FILES = config.writer.accept || false;
+
+// Server Rejection
+let REJECTED = false;
 
 // Socket Connection
 const socket = io(SERVER_URL, {
@@ -30,7 +34,7 @@ const socket = io(SERVER_URL, {
         username: USERNAME,
         password: PASSWORD
     },
-    reconnection: false
+    reconnection: true
 });
 
 // Binding Events
@@ -40,14 +44,19 @@ socket.on("note", onNote);
 socket.on("msg", onMessage);
 socket.on("file", onFile);
 
+// File Manager
+console.log("[LOCAL]: Initializing File Manager (FM)");
+Initilize_FileManager(
+    DIRECTORY_PATH,
+    FILE_TYPES,
+    (file: FileContent) => sendFile(socket, file),
+    ACCEPT_FILES
+);
+StartFileWatcher();
+
 // Initiate socket connection
 console.log("[LOCAL]: Connecting...");
 socket.connect();
-
-// File Watcher
-StartFileWatcher(DIRECTORY_PATH, FILE_TYPES, (file: FileContent) => {
-    sendFile(socket, file);
-}).catch(() => console.log("---- FileManager Error ----"));
 
 // Event Handling Methods
 function onConnect() {
@@ -56,14 +65,25 @@ function onConnect() {
 
 function onDisconnect() {
     console.log("[LOCAL]: Disconnected from the SERVER!");
+    if (!REJECTED) {
+        console.log("\n[LOCAL]: Reconnecting...");
+    }
 }
 
 function onNote({ code, msg }: MsgNote) {
-    if (code == "TICK") {
-        console.log(msg);
-        return;
+    switch (code) {
+        case "TICK":
+            console.log("|:.");
+            break;
+
+        case "ERROR":
+            REJECTED = true;
+            socket.io.opts.reconnection = false;
+        case "DONE":
+        case "WARN":
+            console.log(`[SERVER][${code}]: ${msg}`);
+            break;
     }
-    console.log(`[SERVER][${code}]: ${msg}`);
 }
 
 function onMessage({ from, content }: MsgToClient) {

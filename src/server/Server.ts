@@ -1,7 +1,6 @@
 import io, { Socket } from "socket.io";
 import * as http from "http";
 import express from "express";
-import Path from 'path'
 
 import { FileContent } from "../FileContent";
 import { SocketHub } from "./SocketHub";
@@ -78,10 +77,10 @@ function onCommand({ from, command, args }: Command) {
                 sendNote(client, "DONE", res);
             break;
         default:
-            console.log("[Un-support]", from);
+            console.log("[CMD][UNKNOWN]", from);
             client = hub.selectSocket(from);
             if (client && client.connected)
-                sendNote(client, "ERROR", "Un-support command");
+                sendNote(client, "WARN", "Un-support command");
             break;
     }
 }
@@ -163,9 +162,12 @@ function sendFile(socket: Socket, from: string, file: FileContent) {
 
 // HTTP Client Handling
 expressServer.use('/download', express.static('release'))
+expressServer.set('view engine', 'ejs');
 
 expressServer.get('/', (req, res) => {
-    res.send(`Server is running..! <br> download client application (real-share-v0.2.6) <a href="/download/real-share-v0.2.6.zip">here</a>`);
+    let clients = hub.availableClients();
+    if (clients.length == 0) clients.push("No clients are online.")
+    res.render('index', { clients })
 });
 
 

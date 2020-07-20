@@ -1,6 +1,6 @@
 {
   "name": "real.share",
-  "version": "0.1.0",
+  "version": "0.2.7",
   "main": "./dist/server/Server.js",
   "author": "TLM",
   "license": "MIT",
@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "chokidar": "^3.4.1",
+    "ejs": "^3.1.3",
     "express": "^4.17.1",
     "socket.io": "^2.3.0",
     "socket.io-client": "^2.3.0"
@@ -23,6 +24,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node ./dist/server/Server.js",
+    "startClient": "node ./dist/client/Client.js",
     "devServer": "ts-node ./src/server/Server.ts",
     "devClient": "ts-node ./src/client/Client.ts"
   }

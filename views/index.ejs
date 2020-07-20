@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="UTF-8">
+    <title>Real Share</title>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet">
+</head>
+<body>
+    <h1>REAL SHARE</h1>
+    <h2>#real time directory syncing #low data usage</h2>
+
+    <div class="block">
+        <h3>Download Client Versions</h3>
+        <ul>
+            <li><a href="/download/real-share-v0.2.5.zip">Real Share (beta) v0.2.5</a></li>
+            <li><a href="/download/real-share-v0.2.6.zip">Real Share (beta) v0.2.6</a></li>
+            <li><a class="red" href="/download/real-share-v0.2.7.zip">Real Share (beta) v0.2.7 (latest)</a></li>
+        </ul>
+    </div>
+    <br><br>
+    <div class="block">
+        <h3>Available Clients</h3>
+        <ul>
+            <% for (var i = 0; i < clients.length; i++) { %>
+            <li> <%= clients[i] %> </li>
+            <% } %>
+        </ul>
+    </div>
+
+    <style>
+        * {
+            font-family: 'Source Sans Pro', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #eeeeee ;
+        }
+
+        h1 {
+            margin: 10px 0 0 50px;
+        }
+
+        h2 {
+            color: #444444;
+            margin: 0 0 5px 50px;
+            font-size: 12pt;
+        }
+
+        .block {
+            margin-top: 20px;
+            margin-left: 50px;
+        }
+
+        .block a {
+            text-decoration: none;
+        }
+
+        .red {
+            color: red;
+        }
+
+        .block ul {
+            list-style-type: none;
+            padding-left: 10px;
+        }
+
+        .block li {
+            margin-top: 5px;
+        }
+    </style>
+</body>
+</html>
